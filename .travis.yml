@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+  - "10"
+
+stages:
+  - Test
+  - name: Release
+    if: branch = master AND commit_message !~ /(release|no-release)/
+
+install:
+  - npm config set package-lock false
+  - npm install
+
+jobs:
+  include:
+    - stage: Release
+      node_js: lts/*
+      before_script:
+        - git config user.email ${GITHUB_EMAIL:-"travis@travis-ci.org"}
+        - git config user.name ${GITHUB_USER:-"Travis CI"}
+        - git remote set-url origin https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
+        - git checkout master
+      script:
+        - npm run release
+      before_deploy:
+        - curl -sfLO https://raw.githubusercontent.com/apex/up/master/install.sh
+        - sh install.sh -b ./bin
+      deploy:
+        provider: script
+        script: ./bin/up deploy production
+        skip_cleanup: true

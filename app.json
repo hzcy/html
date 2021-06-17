@@ -1,0 +1,11 @@
+{
+  "name": "microlink-html",
+  "description": "Get HTML from any URL.",
+  "repository": "https://github.com/microlinkhq/html",
+  "keywords": [
+    "microservice",
+    "html",
+    "puppeteer",
+    "browserless"
+  ]
+}
